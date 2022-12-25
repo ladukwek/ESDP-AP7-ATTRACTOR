@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'cabinet_tutors',
     'phonenumber_field',
     'django_bootstrap5'
 ]

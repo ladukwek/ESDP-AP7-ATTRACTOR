@@ -2,7 +2,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from django.views.generic import CreateView, TemplateView
 from accounts.forms import AccountForm, LoginForm
+from accounts.models import TutorModule
 from accounts.models.accounts import Account
+from cabinet_tutors.models import TutorEducationAndDiplomas, SubjectsAndCosts, StudyFormats, AboutTutor
 
 
 class AccountCreateView(CreateView):
@@ -17,6 +19,7 @@ class AccountCreateView(CreateView):
         if form.is_valid():
             account = form.save(commit=False)
             account.type = kwargs['type']
+            account.username = account.email
             account.save()
             login(request, account)
             if account.type == 'parents':
@@ -26,7 +29,14 @@ class AccountCreateView(CreateView):
                 # account.parent = user
                 return redirect('index')          # после создания страницы кабинета установите свой редирект
             if account.type == 'tutor':
-                return redirect('index')          # после создания страницы кабинета установите свой редирект
+                tutor = TutorModule.objects.create(
+                    user=account,
+                    about_tutor=AboutTutor.objects.create(),
+                    education_and_diplomas=TutorEducationAndDiplomas.objects.create(),
+                    subjects_and_costs=SubjectsAndCosts.objects.create(),
+                    study_formats=StudyFormats.objects.create()
+                )
+                return redirect('tutor_cabinet', pk=account.pk)          # после создания страницы кабинета установите свой редирект
             if account.type == 'parents':
                 return redirect('index')          # после создания страницы кабинета установите свой редирект
         context = {}
@@ -63,4 +73,6 @@ class LoginView(TemplateView):
         login(request, user)
         if next:
             return redirect(next)
+        if user.type == 'tutor':
+            return redirect('tutor_cabinet', pk=user.pk)
         return redirect('index')

@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView
 
-from accounts.forms.tutor_modules import TutorModuleForm
+from cabinet_tutors.forms.tutor_modules import TutorModuleForm
 from accounts.models import TutorModule
 
 

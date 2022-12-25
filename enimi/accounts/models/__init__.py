@@ -1,2 +1,2 @@
 from .accounts import Account
-from .tutor_modules import TutorModule
+from cabinet_tutors.models.tutor_modules import TutorModule
