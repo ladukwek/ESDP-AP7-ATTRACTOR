@@ -7,7 +7,6 @@ def save(request: WSGIRequest, *args, **kwargs):
     request.user.tutor_module.about_tutor.birthdate = date
 
     gender = request.POST.get('gender')
-    print(gender)
     request.user.tutor_module.about_tutor.gender = gender
 
     request.user.tutor_module.about_tutor.language.clear()
@@ -22,7 +21,7 @@ def save(request: WSGIRequest, *args, **kwargs):
 
     if request.method == 'POST' and request.body:
         response_data = {
-            'success': request.user.tutor_module.about_tutor.birthdate
+            'success': 'success'
         }
         response = JsonResponse(response_data)
         response.status_code = 201

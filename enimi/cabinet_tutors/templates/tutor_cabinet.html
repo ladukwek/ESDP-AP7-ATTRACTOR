@@ -106,7 +106,6 @@
                 </div>
                 <div id="tabs-6">
                     {% include 'partial/about_tutor.html' %}
-                    {{ user.tutor_module.about_tutor.get_gender_display }}
                 </div>
             </div>
         </div>
@@ -123,5 +122,5 @@
             $("#tabs").tabs();
         });
     </script>
-    {% include 'profile_js.html' %}
+    {% include 'js/profile_js.html' %}
 {% endblock %}

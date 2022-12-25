@@ -34,7 +34,8 @@
         let birthdate = $('#id_birthdate');
         let jsDate = new Date("{{ user.tutor_module.about_tutor.birthdate }}");
         let year = jsDate.getFullYear();
-        let month = jsDate.getMonth() + 1;
+        let monthString = (jsDate.getMonth() + 1).toString();
+        let month = monthString.length > 1 ? monthString : "0" + monthString;
         let dayString = jsDate.getUTCDate().toString();
         let day = dayString.length > 1 ? dayString : "0" + dayString;
         let date = year + "-" + month + "-" + day;
