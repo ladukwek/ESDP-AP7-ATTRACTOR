@@ -22,12 +22,9 @@ class AboutTutorForm(forms.ModelForm):
                 'class': 'form-control',
                 'style': 'max-width: 250px;  height: 90px;',
             }),
-            'description': Textarea(attrs={
-                'rows': 3,
-                'cols': 80,
-                'placeholder': 'Опишите публикацию',
+            'about_me': Textarea(attrs={
+                'rows': 4,
                 'class': 'border-0 border-top',
-                'style': 'padding-right: 150px; outline:0px none transparent; overflow:auto; resize:none',
+                'style': 'width: 400px; overflow:auto; resize:none',
             }),
-
         }

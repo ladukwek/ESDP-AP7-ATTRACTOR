@@ -19,29 +19,20 @@ class TutorModule(models.Model):
         blank=True,
         on_delete=models.CASCADE
     )
-    education_and_diplomas = models.OneToOneField(
+    education_and_diplomas = models.ManyToManyField(
         verbose_name='Образование и дипломы',
         to='cabinet_tutors.TutorEducationAndDiplomas',
         related_name='education_and_costs',
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE
     )
-    subjects_and_costs = models.OneToOneField(
+    subjects_and_costs = models.ManyToManyField(
         verbose_name='Предметы и стоимость',
         to='cabinet_tutors.SubjectsAndCosts',
         related_name='subjects_and_costs',
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE
     )
-    study_formats = models.OneToOneField(
+    study_formats = models.ManyToManyField(
         verbose_name='Формат обучения',
         to='cabinet_tutors.StudyFormats',
         related_name='study_formats',
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE
     )
 
     def __str__(self):

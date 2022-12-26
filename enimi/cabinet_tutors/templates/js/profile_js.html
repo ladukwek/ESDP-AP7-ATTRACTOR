@@ -1,106 +1,151 @@
 <script>
     window.addEventListener('load', function () {
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                let cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    let cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    let cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
 
-        let csrftoken = getCookie('csrftoken');
+            let csrftoken = getCookie('csrftoken');
 
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
 
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
                 }
-            }
-        });
-
-        let birthdate = $('#id_birthdate');
-        let jsDate = new Date("{{ user.tutor_module.about_tutor.birthdate }}");
-        let year = jsDate.getFullYear();
-        let monthString = (jsDate.getMonth() + 1).toString();
-        let month = monthString.length > 1 ? monthString : "0" + monthString;
-        let dayString = jsDate.getUTCDate().toString();
-        let day = dayString.length > 1 ? dayString : "0" + dayString;
-        let date = year + "-" + month + "-" + day;
-        birthdate.attr("value", date);
-
-        let initialGender = "{{ user.tutor_module.about_tutor.gender }}";
-        let genders = [];
-        $('#id_gender option').each(function () {
-            genders.push($(this));
-        });
-        for (let i = 0; i < genders.length; i++) {
-            if (genders[i][0].value === initialGender) {
-                genders[i].attr("selected", "selected");
-            } else {
-                genders[i].attr("selected", false);
-            }
-        }
-
-        let allLanguages = [];
-        $('#id_language option').each(function () {
-            allLanguages.push($(this));
-        });
-        let initialLanguages = {{ initial_languages }};
-        for (let i = 0; i < allLanguages.length; i++) {
-            if (initialLanguages.includes(parseInt(allLanguages[i][0].value))) {
-                allLanguages[i].attr("selected", "selected");
-            }
-        }
-
-        let aboutMe = $('#id_about_me');
-        let initialAboutMe = "{{ user.tutor_module.about_tutor.about_me }}";
-        aboutMe.attr("placeholder", initialAboutMe);
-
-
-        let url = 'http://localhost:8000/cabinet/profile/save/'
-        let submit = $('#submit_all');
-        let event = function (evt) {
-            let date = $('#id_birthdate')[0].value;
-
-            let languages = [];
-            $('#id_language').find(":selected").each(function () {
-                languages.push($(this).val());
             });
 
-            let gender = $('#id_gender').find(":selected")[0].value;
+
+            let birthdate = $('#id_birthdate');
+            let jsDate = new Date("{{ user.tutor_module.about_tutor.birthdate }}");
+            let year = jsDate.getFullYear();
+            let monthString = (jsDate.getMonth() + 1).toString();
+            let month = monthString.length > 1 ? monthString : "0" + monthString;
+            let dayString = jsDate.getUTCDate().toString();
+            let day = dayString.length > 1 ? dayString : "0" + dayString;
+            let date = year + "-" + month + "-" + day;
+            birthdate.attr("value", date);
+
+            let initialGender = "{{ user.tutor_module.about_tutor.gender }}";
+            let genders = [];
+            $('#id_gender option').each(function () {
+                genders.push($(this));
+            });
+            for (let i = 0; i < genders.length; i++) {
+                if (genders[i][0].value === initialGender) {
+                    genders[i].attr("selected", "selected");
+                } else {
+                    genders[i].attr("selected", false);
+                }
+            }
+
+            let allLanguages = [];
+            $('#id_language option').each(function () {
+                allLanguages.push($(this));
+            });
+            let initialLanguages = {{ initial_languages }};
+            for (let i = 0; i < allLanguages.length; i++) {
+                if (initialLanguages.includes(parseInt(allLanguages[i][0].value))) {
+                    allLanguages[i].attr("selected", "selected");
+                }
+            }
 
             let aboutMe = $('#id_about_me');
-            let aboutMeText = aboutMe[0].value ? aboutMe[0].value : aboutMe.attr("placeholder");
+            let initialAboutMe = "{{ user.tutor_module.about_tutor.about_me }}";
+            aboutMe.attr("placeholder", initialAboutMe);
 
-            $.ajax({
-                url: url,
-                method: 'post',
-                data: {
-                    'date': date,
-                    'languages': JSON.stringify(languages),
-                    'gender': gender,
-                    'about_me': aboutMeText
+            let institutions = $('input[name="institution"]')
+            let specialities = $('input[name="speciality"]')
+            let degrees = $('input[name="degree"]')
+
+            {% for i in user.tutor_module.education_and_diplomas.all %}
+                institutions[{{ forloop.counter0 }}].value = "{{ i.institution }}";
+                specialities[{{ forloop.counter0 }}].value = "{{ i.speciality }}"
+                degrees["{{ forloop.counter0 }}"].value = "{{ i.degree }}"
+            {% endfor %}
+
+            let url = 'http://localhost:8000/cabinet/profile/save/'
+            let submit = $('#submit_all');
+            let event = function (evt) {
+                let date = $('#id_birthdate')[0].value;
+
+                let languages = [];
+                $('#id_language').find(":selected").each(function () {
+                    languages.push($(this).val());
+                });
+
+                let gender = $('#id_gender').find(":selected")[0].value;
+
+                let aboutMe = $('#id_about_me');
+                let aboutMeText = aboutMe[0].value ? aboutMe[0].value : aboutMe.attr("placeholder");
+
+                $.ajax({
+                    url: url,
+                    method: 'post',
+                    data: {
+                        'date': date,
+                        'languages': JSON.stringify(languages),
+                        'gender': gender,
+                        'about_me': aboutMeText
+                    }
+                }).done(
+                    function (data) {
+                        console.log(data)
+                    }
+                );
+
+                let educationAndDiplomasIds = {{ education_and_diplomas }};
+
+                let arr = [];
+                let institutions = $('input[name="institution"]')
+                let specialities = $('input[name="speciality"]')
+                let degrees = $('input[name="degree"]')
+                for (let i = 0; i < institutions.length; i++) {
+                    arr.push({
+                        'id': educationAndDiplomasIds[i],
+                        'institution': institutions[i].value,
+                        'speciality': specialities[i].value,
+                        'degree': degrees[i].value
+                    })
                 }
-            }).done(
-                function (data) {
-                    console.log(data)
+
+                for (let i = 0; i < arr.length; i++) {
+                    $.ajax({
+                        url: 'http://localhost:8000/api/educations-and-diplomas/' + arr[i]['id'] + "/",
+                        method: 'put',
+                        data: {
+                            'id': arr[i]['id'],
+                            'institution': arr[i]['institution'],
+                            'speciality': arr[i]['speciality'],
+                            'degree': arr[i]['degree']
+                        }
+                    }).done(
+                        function (data) {
+                            console.log(data)
+                        }
+                    );
                 }
-            );
+
+            }
+
+            submit.on('click', event);
         }
-
-        submit.on('click', event);
-    });
+    )
+    ;
 </script>

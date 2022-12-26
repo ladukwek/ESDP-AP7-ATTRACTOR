@@ -1,3 +1,7 @@
 h1 {
     color: green;
 }
+
+.label_paddings {
+    padding: 5px;
+}

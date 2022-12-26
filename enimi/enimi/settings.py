@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'accounts',
     'cabinet_tutors',
     'phonenumber_field',
-    'django_bootstrap5'
+    'django_bootstrap5',
+    'api',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

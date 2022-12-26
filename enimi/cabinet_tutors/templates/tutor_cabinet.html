@@ -106,6 +106,14 @@
                 </div>
                 <div id="tabs-6">
                     {% include 'partial/about_tutor.html' %}
+                    {% for edu in user.tutor_module.education_and_diplomas.all %}
+                        {% include 'partial/education_and_diplomas.html' %}
+                    {% endfor %}
+                    <div class="d-flex flex-row-reverse">
+                        <div>
+                            <button id="submit_all" class="btn btn-primary text-right">Сохранить</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,7 +124,7 @@
 {% block script %}
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-{#    <script src="{% static 'js/about_tutor.js' %}"></script>#}
+    {#    <script src="{% static 'js/about_tutor.js' %}"></script>#}
     <script>
         $(function () {
             $("#tabs").tabs();

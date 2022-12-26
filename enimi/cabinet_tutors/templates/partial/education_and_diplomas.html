@@ -1,12 +1,11 @@
 {% load django_bootstrap5 %}
-<div>
-    <div>
+<div class="pt-3">
+    <div class="border-top">
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form">
-                {% bootstrap_form about_form layout='horizontal' %}
+            <div class="form pt-2">
+                {% bootstrap_form education_form layout='horizontal' %}
             </div>
         </form>
     </div>
-
 </div>
